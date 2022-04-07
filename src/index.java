@@ -2,6 +2,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import com.google.gson.Gson;
 
@@ -13,6 +14,10 @@ public class index {
 	static boolean isReady = false;
 
 	public static void main(String[] args) {
+		
+//		Crawler c = new Crawler("https://uwindsor.ca");
+//		c.crawl();
+		
 		for (File f : FileService.getFiles()) {
 			Dictionary.buildVocabulary(new In(f).readAll());
 		}
@@ -22,13 +27,16 @@ public class index {
 
 		Javalin app = Javalin.create(config -> {
 			config.addStaticFiles("/", Location.CLASSPATH);
+			config.enableCorsForAllOrigins();
+			config.enableDevLogging();
 		}).start(7070);
 		// Run the Javalin Instance on the port 7070
 		app.get("/", ctx -> {
 			ctx.render("/GUI/index.html");
 		});
 		app.get("/common-words", ctx -> {
-			ctx.render("/GUI/common.html");
+			var data = ctx.json(common_words.common());
+			ctx.render("/GUI/common.html", Collections.singletonMap("data", data));
 		});
 
 		app.get("/common", ctx -> {
@@ -48,6 +56,7 @@ public class index {
 		app.post("/build", ctx -> {
 			isReady = false;
 			String urls = ctx.formParam("urls");
+			System.out.println(urls);
 			ctx.status(200);
 			String[] urls_array = urls.split(",");
 			// trim urls_array

@@ -22,23 +22,26 @@ public class Patternfinder {
 				File oneFile = allfiles[i];
 
 				String[] input_data = new In(oneFile).readAllLines();
-				String url = input_data[0];
-				for (String temp : input_data) {
-					Matcher m1 = r.matcher(temp);
-					while (m1.find()) {
-						// append the matched url to the map
-						if (map.get(url) == null) {
-							List<String> list = new ArrayList<>();
-							list.add(m1.group());
-							map.put(url, list);
-						} else {
-							List<String> list = map.get(url);
-							list.add(m1.group());
-							map.put(url, list);
+				if(input_data.length > 0) {
+					String url = input_data[0];
+					for (String temp : input_data) {
+						Matcher m1 = r.matcher(temp);
+						while (m1.find()) {
+							// append the matched url to the map
+							if (map.get(url) == null) {
+								List<String> list = new ArrayList<>();
+								list.add(m1.group());
+								map.put(url, list);
+							} else {
+								List<String> list = map.get(url);
+								list.add(m1.group());
+								map.put(url, list);
+							}
+							System.out.println("Found phonenumber from file " + i + ": " + m1.group());
 						}
-						System.out.println("Found phonenumber from file " + i + ": " + m1.group());
 					}
 				}
+
 			} else {
 				System.out.println("not a file: " + i);
 			}
@@ -62,23 +65,27 @@ public class Patternfinder {
 				File oneFile = allfiles[i];
 
 				String[] input_data = new In(oneFile).readAllLines();
-				String url = input_data[0];
-				for (String temp : input_data) {
-					Matcher m = r.matcher(temp);
-					while (m.find()) {
-						// append the matched email to the map
-						if (map.get(url) == null) {
-							List<String> list = new ArrayList<>();
-							list.add(m.group());
-							map.put(url, list);
-						} else {
-							List<String> list = map.get(url);
-							list.add(m.group());
-							map.put(url, list);
+
+				if(input_data.length > 0) {
+					String url = input_data[0];
+					for (String temp : input_data) {
+						Matcher m = r.matcher(temp);
+						while (m.find()) {
+							// append the matched email to the map
+							if (map.get(url) == null) {
+								List<String> list = new ArrayList<>();
+								list.add(m.group());
+								map.put(url, list);
+							} else {
+								List<String> list = map.get(url);
+								list.add(m.group());
+								map.put(url, list);
+							}
+							System.out.println("Found emailaddress from file " + i + ": " + m.group());
 						}
-						System.out.println("Found emailaddress from file " + i + ": " + m.group());
 					}
 				}
+
 			} else {
 				System.out.println("not a file: " + i);
 			}
@@ -101,24 +108,27 @@ public class Patternfinder {
 				File oneFile = allfiles[i];
 
 				String[] input_data = new In(oneFile).readAllLines();
-				String url = input_data[0];
-				input_data = Arrays.copyOfRange(input_data, 1, input_data.length);
-				for (String temp : input_data) {
-					Matcher m = r.matcher(temp);
-					while (m.find()) {
-						// append the matched email to the map
-						if (map.get(url) == null) {
-							List<String> list = new ArrayList<>();
-							list.add(m.group());
-							map.put(url, list);
-						} else {
-							List<String> list = map.get(url);
-							list.add(m.group());
-							map.put(url, list);
+				if(input_data.length > 0) {
+					String url = input_data[0];
+					input_data = Arrays.copyOfRange(input_data, 1, input_data.length);
+					for (String temp : input_data) {
+						Matcher m = r.matcher(temp);
+						while (m.find()) {
+							// append the matched email to the map
+							if (map.get(url) == null) {
+								List<String> list = new ArrayList<>();
+								list.add(m.group());
+								map.put(url, list);
+							} else {
+								List<String> list = map.get(url);
+								list.add(m.group());
+								map.put(url, list);
+							}
+							System.out.println("Found Url from file " + i + ": " + m.group());
 						}
-						System.out.println("Found Url from file " + i + ": " + m.group());
 					}
 				}
+			
 			} else {
 				System.out.println("not a file: " + i);
 			}

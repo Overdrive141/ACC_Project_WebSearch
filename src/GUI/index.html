@@ -1,132 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Web Search</title>
-    <link rel="stylesheet" type="text/css" href="/GUI/styles.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/GUI/styles.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
     <script type="text/javascript">
-    	$(document).ready(function(){
-    	    $(document).on('click','.search_button',function(){
-                var search_val=$('#text1').val();
-                $('.result_table').find("tr:gt(0)").remove();
-                if(search_val!="")
-                {
-                    $.ajax({
-                      url: "http://localhost:7070/search",
-                      method:"POST",
-                      data:{'Search_Query':search_val},
-                      success:function(data){
-                        $('.sugges').html("");
-                        $('.suggestions').hide();
-                        $('.total').hide();
-                        $(".occurrences-number").html("");
-                        $(".main-result").html("");
-                        $(".cluster").show();
-                        $(".word2vec").show();
-                        var json_data=jQuery.parseJSON(data);
-                        if(!jQuery.isEmptyObject(json_data.suggestions))
-                        {
-                              $(".main-result").append("<div>"+
-                                    "<span style='font-size: 15px;'><i>Did you mean any of these words? "+Object.keys(json_data.suggestions).join(', ')+"</i></span>"+
-                                    "</div>"); 
-                            
-                        }
-                        if(!jQuery.isEmptyObject(json_data.totalOccurrences))
-                        {
-                            console.log(json_data.totalOccurrences);
-                            list="<b>Total (Occured "+json_data.totalOccurrences.total+" Times)</b><br>";
-                            $(".occurrences-number").html(list);
-                        }
-                        else
-                        {
-                            $(".well").html("Something went wrong!");
-                        }
-                        if(!jQuery.isEmptyObject(json_data.searchResults))
-                        {
-                            html="";
-                                                        
-                            Object.keys(json_data.searchResults).forEach(url => {
-                              $(".main-result").append("<div class='result-single' style='margin: 12px;'>"+
-                                    "<a href='"+url+"' style='font-size: 25px;color: white;text-decoration: underline;' target='_blank'>"+url+"</a><br>"+
-                                    "<span style='font-size: 15px;'><i>Keyword Occured "+json_data.searchResults[url]+" times</i></span>"+
-                                    "</div>"); 
-                            });
-                           //$(".main-result").html(html);        
-                        }
-                        else
-                        {
-                          $(".main-result").append("No results found");                       
-                        }
-                        console.log(json_data);
-                      }
-                    })
-                    $('.main-result').show();
+      $(document).ready(function () {
+        $(document).on("click", ".search_button", function () {
+          var search_val = $("#text1").val();
+          $(".result_table").find("tr:gt(0)").remove();
+          if (search_val != "") {
+            $.ajax({
+              url: "http://localhost:7070/search",
+              method: "POST",
+              data: { Search_Query: search_val },
+              success: function (data) {
+                $(".sugges").html("");
+                $(".suggestions").hide();
+                $(".total").hide();
+                $(".occurrences-number").html("");
+                $(".main-result").html("");
+                $(".cluster").show();
+                $(".word2vec").show();
+                var json_data = jQuery.parseJSON(data);
+                if (!jQuery.isEmptyObject(json_data.suggestions)) {
+                  $(".main-result").append(
+                    "<div>" +
+                      "<span style='font-size: 15px;'><i>Did you mean any of these words? " +
+                      Object.keys(json_data.suggestions).join(", ") +
+                      "</i></span>" +
+                      "</div>"
+                  );
                 }
-                else
-                {
-                    $('.main-result').hide();
-                    alert("Please Enter a Search Query");
+                if (!jQuery.isEmptyObject(json_data.totalOccurrences)) {
+                  console.log(json_data.totalOccurrences);
+                  list =
+                    "<b>Total (Occured " +
+                    json_data.totalOccurrences.total +
+                    " Times)</b><br>";
+                  $(".occurrences-number").html(list);
+                } else {
+                  $(".well").html("Something went wrong!");
                 }
-    	    });
-    	    $(document).on('click','.update_search',function(){
-    	        var vall=$(this).attr('data-value');
-    	        $('#text1').value(vall);
-    	        $('.search_button').click();
-    	    });
-    	});
+                if (!jQuery.isEmptyObject(json_data.searchResults)) {
+                  html = "";
+
+                  Object.keys(json_data.searchResults).forEach((url) => {
+                    $(".main-result").append(
+                      "<div class='result-single' style='margin: 12px;'>" +
+                        "<a href='" +
+                        url +
+                        "' style='font-size: 25px;color: white;text-decoration: underline;' target='_blank'>" +
+                        url +
+                        "</a><br>" +
+                        "<span style='font-size: 15px;'><i>Keyword Occured " +
+                        json_data.searchResults[url] +
+                        " times</i></span>" +
+                        "</div>"
+                    );
+                  });
+                  //$(".main-result").html(html);
+                } else {
+                  $(".main-result").append("No results found");
+                }
+                console.log(json_data);
+              },
+            });
+            $(".main-result").show();
+          } else {
+            $(".main-result").hide();
+            alert("Please Enter a Search Query");
+          }
+        });
+        $(document).on("click", ".update_search", function () {
+          var vall = $(this).attr("data-value");
+          $("#text1").value(vall);
+          $(".search_button").click();
+        });
+      });
     </script>
+  </head>
 
+  <body>
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">Simple Search Engine</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
- </head>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/common-words">Top Common Words</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/crawler">Crawler</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
- <body>
- <div class="container-fluid">
- 
- <nav class="navbar navbar-expand-lg navbar-light">
-  <a class="navbar-brand" href="#">Simple Search Engine</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/common-words">Link</a>
-      </li>
-    </ul>
-  </div>
-</nav>
- 
- <div class="row">
-     <div class="col-md-12">
-         
-         <div class="mr-auto ml-auto col-auto">
-           <form class="form-inline my-2 my-lg-12 justify-content-md-center" >
-      			<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id = "text1">
-      			<button class="search_button btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    		</form>
-         </div>
-
-     </div>
-     <div class="col-sm-12">
-        <div class="occurrences-number"></div>
-     </div>
-     <div class="col-sm-12">
-        <div class="main-result" style="padding:15px;background: #2020206b;">
-            
-         </div>
-     </div>
- </div>
- </div>
- </body>
- </html>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mr-auto ml-auto col-auto">
+            <form class="form-inline my-2 my-lg-12 justify-content-md-center">
+              <input
+                class="form-control mr-sm-2"
+                type="text"
+                placeholder="Search"
+                aria-label="Search"
+                id="text1"
+              />
+              <button
+                class="search_button btn btn-outline-success my-2 my-sm-0"
+                type="button"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="occurrences-number"></div>
+        </div>
+        <div class="col-sm-12">
+          <div
+            class="main-result"
+            style="padding: 15px; background: #2020206b"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

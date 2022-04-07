@@ -6,9 +6,35 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
+
 import textprocessing.In;
 
 public class SearchEngine {
+	
+   // function to sort hashmap by values
+    public static HashMap<String, Integer> sortByValue(HashMap<String, Integer> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer> > list =
+               new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
+
+        // Sort the list using TimSort (BST + Insertion + Merge Sort)
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue()); // desc order
+            }
+        });
+        
+
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
 
 	public static String search(String input) throws IOException {
 		// Crawler.crawl("https://www.uwindsor.ca/");
@@ -40,6 +66,7 @@ public class SearchEngine {
 		HashMap<String, Integer> searchResults = InvertedIndexing.find(input);
 		long endTime = System.nanoTime();
 
+		// Count all Occurrences of the word
 		int totalOccurences = 0;
 		for (int occurences : searchResults.values())
 			totalOccurences += occurences;
@@ -66,15 +93,17 @@ public class SearchEngine {
 			}
 			response.put("suggestions", tempMap);
 		} else {
-
-			Map<String, Integer> sortedByValueDesc = searchResults.entrySet()
-					.stream()
-					.sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-							LinkedHashMap::new));
-			sortedByValueDesc.forEach((key, value) -> System.out.println(key + "  - occured " + value + " times"));
-
-			response.put("searchResults", sortedByValueDesc);
+			 
+			Map<String, Integer> sortedResultsByFrequency = sortByValue(searchResults);
+			
+//			sortedResultsByFrequency.forEach((key, value) -> System.out.println(key + "  - occured " + value + " times"));
+//			Map<String, Integer> sortedResultsByFrequency = searchResults.entrySet()
+//					.stream()
+//					.sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+//					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+//							LinkedHashMap::new));
+			 
+			response.put("searchResults", sortedResultsByFrequency);
 
 			// searchResults.forEach((key, value) -> System.out.println(key + " - occured "
 			// + value + " times"));
