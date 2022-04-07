@@ -51,7 +51,7 @@ public class Crawler {
 		try {
 			Document document = Jsoup.connect(url).followRedirects(true).get();
 			String text = document.text();
-			writeToFile(Config.filePath, url.replace("/", ""), text, ".txt");
+			writeToFile(Config.filePath, url.replace("/", "").replace(":", ""), text, ".txt");
 		} catch (Exception e) {
 
 			System.out.println(e);
