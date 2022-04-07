@@ -1,0 +1,56 @@
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+
+}
+
+.occurrences-number
+{
+        margin-left: 50px;
+        margin-top: 20px;
+        color: white;
+        font-size: 20px;
+        text-align: center;
+}
+
+body {
+    height:100%;
+	display: flex;
+	background-image: linear-gradient( 68.4deg,  rgba(99,251,215,1) -0.4%, rgba(5,222,250,1) 100.2% );
+}
+.outer
+{
+        display:flex;
+    	justify-content: center;
+    	align-items: center;
+}
+.main-result
+{
+   display:flex;
+   justify-content: center;
+   align-items: center;
+   margin-top:5%;
+   color:white;
+   display:none;
+   padding: 15px;
+   background: #2020206b;
+}
+
+
+a {
+    font-size: 25px;
+    color: white;
+    text-decoration: underline;
+}
+
+span {
+    font-size: 15px;
+}
+
+p {
+    font-size: 18px;
+    color: black;
+}
