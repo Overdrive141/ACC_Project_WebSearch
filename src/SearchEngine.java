@@ -47,11 +47,15 @@ public class SearchEngine {
 		System.out.println("About " + totalOccurences + " results (" + (endTime - startTime) + ") ns");
 
 		Map<String, Integer> tempHm = new HashMap<String, Integer>();
+		Map<String, Integer> timeHm = new HashMap<String, Integer>();
 		tempHm.put("total", totalOccurences);
+		// convert long to int
+		timeHm.put("time", (int) (endTime - startTime));
 		response.put("totalOccurrences", tempHm);
+		response.put("time", timeHm);
 
 		if (searchResults.size() == 0) {
-			String[] words = SpellChecker.getWordSuggestions(input);
+			String[] words = Dictionary.getWordSuggestions(input);
 			System.out.println("Did you mean? " + Arrays.toString(words));
 
 			Map<String, Integer> tempMap = new HashMap<String, Integer>();
@@ -85,7 +89,7 @@ public class SearchEngine {
 	public static void main(String[] args) throws IOException {
 		// Crawler.crawl("https://www.uwindsor.ca/");
 		for (File f : FileService.getFiles()) {
-			SpellChecker.buildVocabulary(new In(f).readAll());
+			Dictionary.buildVocabulary(new In(f).readAll());
 
 		}
 
@@ -117,7 +121,7 @@ public class SearchEngine {
 		System.out.println("About " + totalOccurences + " results (" + (endTime - startTime) + ") ns");
 
 		if (searchResults.size() == 0) {
-			String[] words = SpellChecker.getWordSuggestions(input);
+			String[] words = Dictionary.getWordSuggestions(input);
 			System.out.println("Did you mean? " + Arrays.toString(words));
 		} else {
 

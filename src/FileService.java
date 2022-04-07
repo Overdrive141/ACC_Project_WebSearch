@@ -13,6 +13,25 @@ public class FileService {
         return files.toArray(new File[files.size()]);
     }
 
+    // remove all files in the folder
+    public static void clearFiles() {
+        removeAllFiles(new File(Config.filePath));
+    }
+
+    // Recursive function to get all files in subdirectories
+    private static void removeAllFiles(File dir) {
+        File[] allFiles = dir.listFiles();
+        for (File file : allFiles) {
+            if (file.isFile()) {
+                // delete the file
+                file.delete();
+            } else if (file.isDirectory()) {
+                removeAllFiles(file);
+            }
+        }
+
+    }
+
     // Recursive function to get all files in subdirectories
     private static List<File> getAllFiles(File dir) {
         File[] allFiles = dir.listFiles();
@@ -44,12 +63,14 @@ public class FileService {
         return fileNames;
     }
 
-    public static void main(String[] args) {
-        // print all files and directories
-        for (String file : getFileNames()) {
-            System.out.println(file);
-        }
+    // public static void main(String[] args) {
+    // // print all files and directories
+    // for (String file : getFileNames()) {
+    // System.out.println(file);
+    // }
 
-    }
+    // clearFiles();
+
+    // }
 
 }
