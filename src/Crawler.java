@@ -2,9 +2,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.jsoup.Jsoup;
@@ -14,46 +12,80 @@ import org.jsoup.select.Elements;
 
 public class Crawler {
 
-	public static HashMap<String, String> links = new HashMap<String, String>();
+	final String url;
+	final String domain;
 
-	public static List<String> crawl(String url) {
-		List<String> urls = getUrls(url);
+	Crawler(String url) {
+		if (!url.startsWith("https://")) {
+			url = "https://" + url;
+		}
+		if (!url.endsWith("/")) {
+			url += "/";
+		}
+		// Validate url using regular expression
+		if (!url.matches("^(https)://[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)+.*$")) {
+			System.out.println("Invalid URL - " + url);
+			// exit program if invalid url
+			System.exit(0);
+		}
+		// Extract domain from url
+		this.domain = url.substring(0, url.indexOf("/", 8));
+		this.url = url;
+	}
+
+	public HashSet<String> crawl() {
+		System.out.println("Started Crawling from " + url);
+		HashSet<String> urls = getUrls(url);
 		for (String link : urls) {
 			htmlToText(link);
 		}
 		return urls;
 	}
 
-	private static List<String> getUrls(String url) {
-		List<String> urls = new ArrayList<>();
+	private HashSet<String> getUrls(String url) {
+		HashSet<String> urls = new HashSet<String>();
+
+		System.out.println("Domain - " + domain);
 		try {
-			System.out.println("Started Crawling!!");
 			Document document = Jsoup.connect(url).get();
 			Elements links = document.select("a[href]");
 			for (Element link : links) {
-				String s = link.attr("abs:href");
-				urls.add(s);
-				// String regex = new URL();
-				// Pattern p = Pattern.compile(regex);
-				// Matcher m = p.matcher(s);
-				// while (m.find()) {
-				// urls.add(m.group(0));
-				// }
+				// Don't download external links
+				if (link.attr("rel").equals("nofollow")) {
+					continue;
+				}
+				String absUrl = link.attr("abs:href");
+
+				// Delete last / from the url
+				if (absUrl.endsWith("/")) {
+					absUrl = absUrl.substring(0, absUrl.length() - 1);
+				}
+
+				// Check if the link is part of the same domain
+				if (absUrl.contains(domain)) {
+					urls.add(absUrl);
+				}
 			}
 		} catch (Exception e) {
 			System.out.println("Couldn't connect to: " + url);
 
 		}
+		System.out.println("Found Webpages - " + urls.size());
+		// Print found web pages in linear order
+		for (String s : urls) {
+			System.out.println(s);
+		}
 		return urls;
 	}
 
-	private static void htmlToText(String url) {
+	private void htmlToText(String url) {
 		try {
 			Document document = Jsoup.connect(url).followRedirects(true).get();
-			String text = document.text();
-			writeToFile(Config.filePath, url.replace("/", "").replace(":", ""), text, ".txt");
+			String text = url + "\n" + document.text();
+			String folderPath = Config.filePath + "/" + domain.substring(8);
+			String fileName = url.replace("/", "").replace(":", "");
+			writeToFile(folderPath, fileName, text, ".txt");
 		} catch (Exception e) {
-
 			System.out.println(e);
 			System.out.println("Crawling forbidden for url: " + url);
 		}
@@ -66,11 +98,15 @@ public class Crawler {
 			if (!outputFolder.exists() && !outputFolder.isDirectory()) {
 				outputFolder.mkdir();
 			}
-			writer = new BufferedWriter(new FileWriter(folderPath + fileName + ext));
+			String filePath = folderPath + "/" + fileName + ext;
+			// rewrite if file exists
+			File file = new File(filePath);
+			if (file.exists()) {
+				file.delete();
+			}
+			writer = new BufferedWriter(new FileWriter(filePath));
 			writer.write(text);
 			writer.close();
-			File file = new File(folderPath + fileName + ext);
-			System.out.println("Saved: " + file.getAbsolutePath());
 			return file;
 		} finally {
 			if (Objects.nonNull(writer)) {
@@ -80,7 +116,8 @@ public class Crawler {
 	}
 
 	public static void main(String[] args) {
-		crawl("https://www.uwindsor.ca/");
+		new Crawler("uwindsor.ca").crawl();
+		// new Crawler("github.com").crawl();
 	}
 
 }
