@@ -1,3 +1,4 @@
+// Taken from ACC project resources
 public class EditDistance {
     public static int find(String word1, String word2) {
         int len1 = word1.length();

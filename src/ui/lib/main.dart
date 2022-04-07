@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
   }
 
-  int get numResults => _results['totalOccurrences']?['total'] ?? 0;
+  int get numResults => results.length;
   int get resultTime => _results['time']?['time'] ?? 0;
 
   Map<String, int> get results {
